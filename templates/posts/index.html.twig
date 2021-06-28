@@ -1,2 +1,7 @@
+{% extends 'base.html.twig' %}
 
-<h1>This post name is...</h1>
+{% block title%} Symfony CRUD Posts {% endblock%}
+
+{% block body %}
+<h1>This is a post from category {{ postname }}</h1>
+{% endblock %}

@@ -3,6 +3,6 @@
 #         resource: '@FrameworkBundle/Resources/config/routing/errors.xml'
 #         prefix: /_error
 
-index:
-    path: /name
-    controller: App\Controller\PostController::index
+# index:
+#     path: /name
+#     controller: App\Controller\PostController::index
