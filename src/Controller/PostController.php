@@ -11,15 +11,15 @@ use Symfony\Bundle\FrameworkExtraBundle\Configuration\Method;
 class PostController extends AbstractController {
 
     /**
-    * @Route("/post")
+    * @Route("/")
     */
 
     public function index(){
 
-        $postname = 'People and nature';
+        // $postname = 'People and nature';
+        $posts = ['Post_One', 'Post_Two', 'Post_Three'];
 
-        return $this->render('posts/index.html.twig', ['postname' => $postname,]);
-        // return new Response('<html><body>post category is: '. $postname .'</body></html>');
+        return $this->render('posts/index.html.twig', ['posts' => $posts,]);
     }
 }
 

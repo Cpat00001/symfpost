@@ -3,5 +3,28 @@
 {% block title%} Symfony CRUD Posts {% endblock%}
 
 {% block body %}
-<h1>This is a post from category {{ postname }}</h1>
+<h1>This is a list of current posts: </h1>
+    {% if posts %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Post</th>
+                    <th>Read Post</th>
+                    <th>Delete Post</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ post }}</td>
+                        <td><a href="/post/1" class="btn btn-dark">Show</a></td>
+                        <td><a href="#" class="btn btn-danger">Delete</a></td>
+                    </tr>
+                {% else %}
+                    No Posts found 
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif%}
 {% endblock %}
+
