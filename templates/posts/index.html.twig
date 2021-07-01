@@ -16,8 +16,8 @@
             <tbody>
                 {% for post in posts %}
                     <tr>
-                        <td>{{ post }}</td>
-                        <td><a href="/post/1" class="btn btn-dark">Show</a></td>
+                        <td>{{ post.title }}</td>
+                        <td><a href="post/{{ post.id }}" class="btn btn-dark">Show</a></td>
                         <td><a href="#" class="btn btn-danger">Delete</a></td>
                     </tr>
                 {% else %}
