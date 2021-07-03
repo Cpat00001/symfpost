@@ -2,17 +2,22 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkExtraBundle\Configuration\Method;
 use App\Entity\Post;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
 
 class PostController extends AbstractController {
 
     /**
-    * @Route("/")
+    * @Route("/", name="homepage")
     */
 
     public function index(){
@@ -23,7 +28,76 @@ class PostController extends AbstractController {
 
         return $this->render('posts/index.html.twig', ['posts' => $posts,]);
     }
-    // show individual ID Post
+   
+    // route to handle with form
+    /**
+     * @Route("/new",name = "new_post")
+     * Method({"GET","POST"});
+     */
+
+     public function new(Request $request){
+         $post = new Post();
+
+         $form = $this->createFormBuilder($post)
+         ->add('title',TextType::class,array('attr' => array('class' => 'form-control')))
+         ->add('body',TextareaType::class, array('required' => true, 
+         'attr' => array('class' => 'form-control')))
+         ->add('save',SubmitType::class, ['label' => 'Create Post', 
+         'attr' => array('class' => 'btn btn-primary mt-5')])
+         ->getForm();
+        //  handle with form and insert data to DB
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $data = $form->getData();
+
+            // save data to DB -> Doctrine EntityManager
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($data);
+            $entityManager->flush();
+
+            // redirect after submitting form
+            return $this->redirectToRoute("homepage");
+        }
+
+        //  render form
+        return $this->render('posts/new.html.twig',['form' => $form->createView(),]);
+     }
+     /**
+     * @Route("/post/edit/{id}",name = "update_post")
+     * Method({"GET","POST"});
+     */
+
+    public function update(Request $request, $id){
+        // get post with a chosen ID passed to edit()as argument
+        // $post = $this->getDoctrine()->getRepository(Post::class)->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        $post = $entityManager->getRepository(Post::class)->find($id);
+
+
+        $form = $this->createFormBuilder($post)
+        ->add('title',TextType::class,array('attr' => array('class' => 'form-control')))
+        ->add('body',TextareaType::class, array('required' => true, 
+        'attr' => array('class' => 'form-control')))
+        ->add('save',SubmitType::class, ['label' => 'Change Post and Save', 
+        'attr' => array('class' => 'btn btn-success mt-5')])
+        ->getForm();
+       //  handle with form and insert data to DB
+       $form->handleRequest($request);
+
+       if($form->isSubmitted() && $form->isValid()){
+
+           // save data to DB -> Doctrine EntityManager
+           $entityManager->flush();
+
+           // redirect after submitting form
+           return $this->redirectToRoute("homepage");
+       }
+
+       //  render form
+       return $this->render('posts/update.html.twig',['form' => $form->createView(),]);
+    }
+      // show individual ID Post
     /**
      * @Route("post/{id}", name="post_show")
      */
@@ -38,6 +112,25 @@ class PostController extends AbstractController {
             No post found with id' .$id);
         }
     }
+    /**
+     *  @Route("/posts/delete/{id}", methods={"DELETE"})
+     * 
+     */
+    public function delete(Request $request, $id){
+         
+        $repository = $this->getDoctrine()->getRepository(Post::class);
+        $post = $repository->find($id);
+        
+        // if Post with given $id have been found -> then remove and execute flush()
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($post);
+            $entityManager->flush();
+
+            // send Resposne to fetch().response() javascript
+            $response = new Response();
+            $response->send();
+    }
+
     // adding new Post from url - example
     /**
      * @Route("/post/save")

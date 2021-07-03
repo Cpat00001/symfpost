@@ -5,12 +5,13 @@
 {% block body %}
 <h1>This is a list of current posts: </h1>
     {% if posts %}
-        <table class="table table-striped">
+        <table id="tabela" class="table table-striped" >
             <thead>
                 <tr>
                     <th>Post</th>
                     <th>Read Post</th>
                     <th>Delete Post</th>
+                    <th>Edit & Save</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,7 +19,8 @@
                     <tr>
                         <td>{{ post.title }}</td>
                         <td><a href="post/{{ post.id }}" class="btn btn-dark">Show</a></td>
-                        <td><a href="#" class="btn btn-danger">Delete</a></td>
+                        <td><a href="#" class="btn btn-danger delete-post" data-post-id ="{{  post.id }}">Delete</a></td>
+                        <td><a href="post/edit/{{ post.id }}" class="btn btn-success delete-post" data-post-id ="{{  post.id }}">Edit & Save</a></td>
                     </tr>
                 {% else %}
                     No Posts found 
@@ -27,4 +29,12 @@
         </table>
     {% endif%}
 {% endblock %}
+
+{% block javascripts %}
+            {#{{ encore_entry_script_tags('app') }}#}
+            <script src="/symfpost/public/js/crud_actions.js" defer></script>
+{% endblock %}
+
+
+
 
